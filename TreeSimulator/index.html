@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EchoDupe | TreeSimulator</title>
+    <title>EchoDupe | Space Forest</title>
     <link rel="icon" type="image/png" href="../assets/title.png">
     <style>
         :root { --neon: #00ffff; }
-        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: #000; }
+        body { margin: 0; overflow: hidden; font-family: 'Courier New', monospace; background: #000; }
         
         #hub-btn {
             position: absolute; top: 20px; right: 20px;
@@ -18,27 +18,27 @@
         #ui {
             position: absolute; top: 20px; left: 20px;
             color: white; background: rgba(0,0,0,0.6);
-            padding: 20px; border-radius: 10px; border-left: 5px solid var(--neon);
+            padding: 20px; border-left: 5px solid var(--neon);
             z-index: 10; pointer-events: none;
         }
 
-        #store-btn {
-            position: absolute; bottom: 20px; left: 20px;
-            padding: 15px 30px; background: var(--neon); color: black;
-            border: none; font-weight: bold; cursor: pointer; z-index: 10;
+        #interaction-prompt {
+            position: absolute; bottom: 20%; left: 50%;
+            transform: translateX(-50%); color: var(--neon);
+            font-size: 1.5em; display: none; text-shadow: 0 0 10px var(--neon);
         }
 
         #store-gui {
             display: none; position: fixed; right: 0; top: 0; width: 300px; height: 100%;
-            background: rgba(0, 10, 10, 0.95); border-left: 2px solid var(--neon);
+            background: rgba(0, 5, 10, 0.98); border-left: 2px solid var(--neon);
             color: white; padding: 40px 20px; z-index: 600;
         }
 
         .store-item {
-            background: rgba(255,255,255,0.1); padding: 15px;
-            margin-bottom: 10px; border-radius: 5px; cursor: pointer;
+            background: rgba(255,255,255,0.05); padding: 15px;
+            margin-bottom: 10px; border: 1px solid #222; cursor: pointer;
         }
-        .store-item:hover { background: rgba(0,255,255,0.2); }
+        .store-item:hover { border-color: var(--neon); background: rgba(0,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -46,21 +46,22 @@
 <a href="../index.html" id="hub-btn">BACK TO HUB</a>
 
 <div id="ui">
-    <div style="font-size: 0.8em; opacity: 0.7;">TOTAL_CAPITAL</div>
+    <div style="font-size: 0.8em; opacity: 0.7;">ASTRO_CREDITS</div>
     <div style="font-size: 2.2em; font-weight: bold;">$<span id="money">0</span></div>
+    <div id="worker-stat" style="font-size: 0.9em; margin-top: 5px;">WORKERS: 0</div>
 </div>
 
-<button id="store-btn" onclick="toggleStore(true)">OPEN_STORE</button>
+<div id="interaction-prompt">[E] ENTER TRADING POST</div>
 
 <div id="store-gui">
-    <button onclick="toggleStore(false)" style="float:right;">X</button>
-    <h2 style="color:var(--neon)">STORE</h2>
+    <button onclick="toggleStore(false)" style="float:right; background:none; color:red; border:none; cursor:pointer;">[X]</button>
+    <h2 style="color:var(--neon); letter-spacing: 5px;">STATION_SHOP</h2>
     <div class="store-item" onclick="buyWorker()">
-        <strong>Hire Lumberjack</strong><br>
+        <strong>Hire Astro-Bot</strong><br>
         Cost: $<span id="worker-cost">25</span>
     </div>
     <div class="store-item" onclick="buyAxe()">
-        <strong>Upgrade Axe</strong><br>
+        <strong>Laser Edge Upgrade</strong><br>
         Cost: $<span id="axe-cost">100</span>
     </div>
 </div>
@@ -71,9 +72,8 @@
 <script>
     function toggleStore(show) {
         document.getElementById('store-gui').style.display = show ? 'block' : 'none';
-        if (show) document.exitPointerLock();
+        if (!show) document.body.requestPointerLock();
     }
 </script>
-
 </body>
 </html>

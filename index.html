@@ -90,18 +90,12 @@
             <p class="text-[10px] font-black uppercase tracking-[1em] text-zinc-500 mt-6">Select Environment</p>
         </div>
 
-        <div id="game-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+        <div id="game-grid" class="flex justify-center w-full">
             
-            <div class="game-card p-10 rounded-[35px] text-center group" onclick="boot('TreeSimulator/index.html')">
-                <span class="text-4xl mb-4 block group-hover:scale-125 transition-transform duration-500">🌲</span>
-                <h3 class="text-3xl font-black uppercase italic group-hover:text-cyan-500 transition">Tree Sim</h3>
-                <p class="text-zinc-500 mt-2 text-xs font-bold tracking-widest uppercase">Env_Simulation_v1.2</p>
-            </div>
-
-            <div class="game-card p-10 rounded-[35px] text-center group opacity-40 cursor-not-allowed">
-                <span class="text-4xl mb-4 block grayscale">🚀</span>
-                <h3 class="text-3xl font-black uppercase italic">Space Drift</h3>
-                <p class="text-zinc-500 mt-2 text-xs font-bold tracking-widest uppercase">System_Offline</p>
+            <div class="game-card p-10 rounded-[35px] text-center group max-w-sm w-full" onclick="boot('Snake/index.html')">
+                <span class="text-4xl mb-4 block group-hover:scale-125 transition-transform duration-500">🐍</span>
+                <h3 class="text-3xl font-black uppercase italic group-hover:text-cyan-500 transition">Neon Snake</h3>
+                <p class="text-zinc-500 mt-2 text-xs font-bold tracking-widest uppercase">Arcade_Simulation_v2.0</p>
             </div>
 
         </div>
@@ -132,7 +126,6 @@
                     clearInterval(interval);
                     window.location.href = url;
                 } else {
-                    // Fast, variable digital loading feel
                     progress += Math.random() * 25;
                     bar.style.width = Math.min(progress, 100) + '%';
                 }

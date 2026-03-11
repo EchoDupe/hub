@@ -33,14 +33,22 @@
             z-index: -1; pointer-events: none;
         }
 
-        /* Scanline Effect */
         .scanline {
             width: 100%; height: 100vh; 
             background: linear-gradient(to bottom, transparent 50%, rgba(6, 182, 212, 0.02) 50%);
             background-size: 100% 4px; position: fixed; pointer-events: none; z-index: 100;
         }
 
-        /* Game Card Styling */
+        /* Centered Layout Styling */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+        }
+
         .game-card { 
             background: rgba(10, 10, 15, 0.8); 
             backdrop-filter: blur(20px); 
@@ -48,11 +56,15 @@
             transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            max-width: 400px;
         }
-        .game-card:hover { 
+        
+        .game-card.active:hover { 
             border-color: var(--neon); 
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.15); 
             transform: translateY(-10px); 
+            cursor: pointer;
         }
 
         /* Loading Screen Style */
@@ -77,43 +89,35 @@
         <div id="bar-container"><div id="bar"></div></div>
     </div>
 
-    <nav class="w-full bg-black/40 border-b border-cyan-500/10 backdrop-blur-xl mb-16">
+    <nav class="w-full bg-black/40 border-b border-cyan-500/10 backdrop-blur-xl mb-12">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-10 py-8">
             <h1 class="text-3xl font-black italic text-cyan-500 tracking-tighter uppercase select-none">
                 ECHODUPE<span class="text-white">GAMES</span>
             </h1>
-            <div class="text-[10px] font-bold text-zinc-500 tracking-widest uppercase">System_Status: <span class="text-cyan-500">Online</span></div>
+            <div class="text-[10px] font-bold text-zinc-500 tracking-widest uppercase">System: <span class="text-cyan-500">Live</span></div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 flex flex-col items-center">
+    <main class="max-w-6xl mx-auto px-6">
         
-        <div class="mb-20 text-center">
-            <img src="assets/title.png" alt="ECHODUPE" class="max-w-[400px] w-full h-auto drop-shadow-[0_0_30px_rgba(6,182,212,0.2)] mx-auto mb-6">
-            <p class="text-[10px] font-black uppercase tracking-[1em] text-zinc-600">Select Neural Interface</p>
+        <div class="mb-16 text-center">
+            <img src="assets/title.png" alt="ECHODUPE" class="max-w-[350px] w-full h-auto drop-shadow-[0_0_30px_rgba(6,182,212,0.2)] mx-auto mb-6">
+            <p class="text-[10px] font-black uppercase tracking-[1em] text-zinc-600">Active Node Selection</p>
         </div>
 
-        <div id="game-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-            
-            <div class="game-card p-10 rounded-[40px] text-center group cursor-pointer" onclick="boot('Snake/index.html')">
+        <div class="game-container">
+            <div class="game-card active p-10 rounded-[40px] text-center group" onclick="boot('Snake/index.html')">
                 <span class="text-5xl mb-6 block group-hover:scale-110 transition-transform duration-500">🐍</span>
                 <h3 class="text-2xl font-black uppercase italic group-hover:text-cyan-500 transition">Neon_Snake</h3>
-                <p class="text-zinc-500 mt-2 text-[10px] font-bold tracking-widest uppercase">Input: WASD / Arrows</p>
-                <div class="mt-6 text-cyan-500 opacity-0 group-hover:opacity-100 transition-all text-[10px] font-black tracking-widest">LAUNCH_STREAM ></div>
+                <p class="text-zinc-500 mt-2 text-[10px] font-bold tracking-widest uppercase">WASD Control Configured</p>
+                <div class="mt-6 text-cyan-500 opacity-0 group-hover:opacity-100 transition-all text-[10px] font-black tracking-widest">BOOT_SIMULATION ></div>
             </div>
 
-            <div class="game-card p-10 rounded-[40px] text-center opacity-40 cursor-not-allowed filter grayscale">
-                <span class="text-5xl mb-6 block">🎮</span>
-                <h3 class="text-2xl font-black uppercase italic">Neural_Chess</h3>
-                <p class="text-zinc-500 mt-2 text-[10px] font-bold tracking-widest uppercase">Status: Encrypted</p>
+            <div class="mt-8 text-center">
+                <div class="inline-block px-8 py-3 bg-white/5 border border-white/5 rounded-full backdrop-blur-sm">
+                    <span class="text-[10px] font-black text-zinc-600 tracking-[0.5em] uppercase">Coming_Soon</span>
+                </div>
             </div>
-
-            <div class="game-card p-10 rounded-[40px] text-center opacity-40 cursor-not-allowed filter grayscale">
-                <span class="text-5xl mb-6 block">⚡</span>
-                <h3 class="text-2xl font-black uppercase italic">Pulse_Runner</h3>
-                <p class="text-zinc-500 mt-2 text-[10px] font-bold tracking-widest uppercase">Status: Locked</p>
-            </div>
-
         </div>
 
     </main>
@@ -122,23 +126,20 @@
         <a href="https://echodupe-hub.netlify.app" 
            target="_blank" 
            class="flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md border border-cyan-500/20 rounded-full group hover:border-cyan-500/50 transition-all duration-300">
-            
             <div class="flex flex-col items-end">
                 <span class="text-[8px] font-black text-zinc-500 tracking-[0.2em] uppercase leading-none">System_Link</span>
-                <span class="text-[10px] font-bold text-white group-hover:text-cyan-400 transition-colors uppercase italic">Main_Hub_Portal</span>
+                <span class="text-[10px] font-bold text-white group-hover:text-cyan-400 transition-colors uppercase italic">EchoDupe_Hub</span>
             </div>
-            
             <div class="w-8 h-8 rounded-full border border-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/10 transition-all">
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-cyan-500"></i>
             </div>
         </a>
     </div>
 
-    <footer class="py-32 border-t border-cyan-500/10 mt-32">
+    <footer class="py-24 border-t border-cyan-500/10 mt-24">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <img src="assets/title.png" class="h-8 mx-auto opacity-20 filter grayscale mb-6">
             <p class="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-600 mb-2">
-                &copy; 2026 ECHODUPE INDUSTRIES. ALL RIGHTS RESERVED.
+                &copy; 2026 ECHODUPE INDUSTRIES.
             </p>
             <p class="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-800">
                 Maintained by <span class="text-cyan-500/50">Skitxoe</span>
@@ -157,7 +158,7 @@
                     clearInterval(interval);
                     window.location.href = url;
                 } else {
-                    progress += Math.random() * 20;
+                    progress += Math.random() * 25;
                     bar.style.width = Math.min(progress, 100) + '%';
                 }
             }, 100);

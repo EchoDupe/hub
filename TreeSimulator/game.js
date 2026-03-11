@@ -1,15 +1,17 @@
-// --- 1. CONFIG & STATS ---
+// --- 1. DATA & STATE ---
 let stats = { money: 0, mult: 5, rebirths: 0, workers: 0, wPrice: 25 };
 let isMenuOpen = false, isHarvesting = false;
 let velocityY = 0, isGrounded = true;
+let player = { x: 0, z: 10, y: 0, yaw: 0 }; // y will be calculated based on ground
+let keys = {};
 
-function save() { localStorage.setItem('TreeSim_v4', JSON.stringify(stats)); }
+function save() { localStorage.setItem('TreeSim_v5', JSON.stringify(stats)); }
 function load() {
-    const d = localStorage.getItem('TreeSim_v4');
+    const d = localStorage.getItem('TreeSim_v5');
     if(d) { stats = JSON.parse(d); updateUI(); }
 }
 
-// --- 2. THE WORLD (Hills & Borders) ---
+// --- 2. WORLD (Real Hills Geometry) ---
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87CEEB);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -21,66 +23,66 @@ scene.add(new THREE.AmbientLight(0xffffff, 1.2));
 const sun = new THREE.DirectionalLight(0xffffff, 1.0);
 sun.position.set(50, 150, 50); scene.add(sun);
 
-// Hills logic
-const groundGeo = new THREE.PlaneGeometry(800, 800, 40, 40);
-const pos = groundGeo.attributes.position;
-for(let i=0; i<pos.count; i++) {
-    let x = pos.getX(i), y = pos.getY(i);
-    pos.setZ(i, Math.sin(x*0.05) * Math.cos(y*0.05) * 4); // Random Hills
+// Hill Generation Function
+function getGroundHeight(x, z) {
+    // This formula MUST match the ground geometry math below
+    return Math.sin(x * 0.05) * Math.cos(z * 0.05) * 6;
+}
+
+const groundGeo = new THREE.PlaneGeometry(1000, 1000, 100, 100);
+const vertices = groundGeo.attributes.position;
+for (let i = 0; i < vertices.count; i++) {
+    const x = vertices.getX(i);
+    const y = vertices.getY(i);
+    vertices.setZ(i, getGroundHeight(x, y)); 
 }
 groundGeo.computeVertexNormals();
-const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({ color: 0x3d8c40 }));
-ground.rotation.x = -Math.PI/2;
+const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({ color: 0x3d8c40, flatShading: false }));
+ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// Neon Border
-const border = new THREE.Mesh(
-    new THREE.TorusGeometry(390, 2, 16, 100),
-    new THREE.MeshBasicMaterial({ color: 0x00ffff })
-);
-border.rotation.x = Math.PI/2; scene.add(border);
-
-// --- 3. REALISTIC TREES (Branches & Sizes) ---
+// --- 3. IMPROVED TREES (Branches + Randomization) ---
 let trees = [];
-function createDetailedTree(x, z) {
+function createTree(x, z) {
     const group = new THREE.Group();
-    const scale = 0.5 + Math.random() * 2.5; // HUGE variety in size
+    const scale = 0.6 + Math.random() * 2.0;
+    const gHeight = getGroundHeight(x, z);
 
     // Trunk
     const trunk = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.4, 0.6, 6),
+        new THREE.CylinderGeometry(0.4, 0.6, 7),
         new THREE.MeshStandardMaterial({ color: 0x5d4037 })
     );
-    trunk.position.y = 3; group.add(trunk);
+    trunk.position.y = 3.5;
+    group.add(trunk);
 
     // Branches
-    for(let i=0; i<3; i++) {
-        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.3, 3), new THREE.MeshStandardMaterial({color: 0x5d4037}));
-        branch.position.y = 3 + i;
-        branch.rotation.z = Math.random() * 1.5;
-        branch.rotation.y = Math.random() * Math.PI * 2;
-        group.add(branch);
+    for(let i=0; i<4; i++) {
+        const b = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.25, 4), new THREE.MeshStandardMaterial({color: 0x5d4037}));
+        b.position.y = 3 + i;
+        b.rotation.z = 1 + Math.random();
+        b.rotation.y = (i * Math.PI) / 2;
+        group.add(b);
     }
 
-    // Leaves (Blobs)
-    const leaves = new THREE.Mesh(new THREE.DodecahedronGeometry(3.5), new THREE.MeshStandardMaterial({color: 0x2e7d32}));
-    leaves.position.y = 7; group.add(leaves);
+    // Leaves
+    const leaves = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), new THREE.MeshStandardMaterial({ color: 0x2e7d32 }));
+    leaves.position.y = 8;
+    group.add(leaves);
 
     group.scale.set(scale, scale, scale);
-    group.position.set(x, 0, z);
+    group.position.set(x, gHeight, z); // Set tree base to ground height
     scene.add(group);
     return { obj: group, x, z, scale };
 }
-for(let i=0; i<110; i++) trees.push(createDetailedTree((Math.random()-0.5)*700, (Math.random()-0.5)*700));
 
-// Shop House
-const shop = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 15), new THREE.MeshStandardMaterial({color: 0x8d6e63}));
-shop.position.set(0, 5, -60); scene.add(shop);
+for(let i=0; i<120; i++) {
+    let tx = (Math.random()-0.5)*800;
+    let tz = (Math.random()-0.5)*800;
+    trees.push(createTree(tx, tz));
+}
 
-// --- 4. PLAYER & JUMP ---
-let player = { x: 0, z: 10, y: 6, yaw: 0 };
-let keys = {};
-
+// --- 4. INPUTS ---
 window.addEventListener("mousedown", () => { if(!isMenuOpen) renderer.domElement.requestPointerLock(); });
 document.addEventListener("mousemove", (e) => {
     if(document.pointerLockElement === renderer.domElement) {
@@ -91,61 +93,72 @@ document.addEventListener("mousemove", (e) => {
 
 document.addEventListener("keydown", e => {
     const k = e.key.toLowerCase(); keys[k] = true;
-    if(k === ' ' && isGrounded) { velocityY = 0.3; isGrounded = false; }
+    if(k === ' ' && isGrounded) { 
+        velocityY = 0.4; // Jump Strength
+        isGrounded = false; 
+    }
+    if(k === 'k') { player.x = 0; player.z = -50; }
     if(k === 'e' || k === 'p') {
-        isMenuOpen = true; 
+        isMenuOpen = true;
         document.getElementById(k === 'e' ? 'store-gui' : 'settings-gui').style.display = 'block';
         document.exitPointerLock();
     }
-    if(k === 'k') teleportToShop();
 });
 document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
-window.teleportToShop = function() { player.x = 0; player.z = -40; };
-
-// --- 5. LOGIC ---
-window.buyWorker = function() {
-    if(stats.money >= stats.wPrice) {
-        stats.money -= stats.wPrice; stats.workers++;
-        stats.wPrice = Math.floor(stats.wPrice * 1.6);
-        updateUI(); save();
-    }
-};
-
-function updateUI() { document.getElementById('money').innerText = Math.floor(stats.money); document.getElementById('w-cost').innerText = stats.wPrice; }
-
-// --- 6. GAME LOOP ---
+// --- 5. THE ENGINE (The "Floating" Fix) ---
 function update() {
     if(isMenuOpen) return;
 
-    let speed = keys["shift"] ? 1.5 : 0.8;
+    let speed = keys["shift"] ? 1.4 : 0.7;
     if(keys["w"]) { player.x -= Math.sin(player.yaw) * speed; player.z -= Math.cos(player.yaw) * speed; }
     if(keys["s"]) { player.x += Math.sin(player.yaw) * speed; player.z += Math.cos(player.yaw) * speed; }
     if(keys["a"]) { player.x -= Math.cos(player.yaw) * speed; player.z += Math.sin(player.yaw) * speed; }
     if(keys["d"]) { player.x += Math.cos(player.yaw) * speed; player.z -= Math.sin(player.yaw) * speed; }
 
-    // Gravity/Jump
-    player.y += velocityY;
-    if(player.y > 6) { velocityY -= 0.015; } else { player.y = 6; velocityY = 0; isGrounded = true; }
+    // BORDER LIMIT
+    const dist = Math.sqrt(player.x**2 + player.z**2);
+    if(dist > 450) { player.x *= 0.9; player.z *= 0.9; }
 
-    // Border Check
-    const distFromCenter = Math.sqrt(player.x**2 + player.z**2);
-    if(distFromCenter > 380) { player.x *= 0.98; player.z *= 0.98; }
+    // PHYSICS & HEIGHT DETECTION
+    const currentGround = getGroundHeight(player.x, player.z);
+    
+    player.y += velocityY;
+    
+    // Check if player is on or below the hill height
+    if(player.y <= currentGround + 6) { // 6 is player eye level
+        player.y = currentGround + 6;
+        velocityY = 0;
+        isGrounded = true;
+    } else {
+        velocityY -= 0.02; // Gravity
+        isGrounded = false;
+    }
 
     camera.position.set(player.x, player.y, player.z);
 
-    // Harvest
+    // HARVESTING LOGIC
     if(!isHarvesting) {
         trees.forEach(t => {
-            if(Math.sqrt((player.x - t.x)**2 + (player.z - t.z)**2) < 8) {
-                isHarvesting = true; stats.money += stats.mult;
+            const d = Math.sqrt((player.x - t.x)**2 + (player.z - t.z)**2);
+            if(d < 7 * t.scale) {
+                isHarvesting = true;
+                stats.money += stats.mult;
                 updateUI(); save();
-                t.x = (Math.random()-0.5)*700; t.z = (Math.random()-0.5)*700;
-                t.obj.position.set(t.x, 0, t.z);
+                
+                // Respawn Tree
+                t.x = (Math.random()-0.5)*800;
+                t.z = (Math.random()-0.5)*800;
+                t.obj.position.set(t.x, getGroundHeight(t.x, t.z), t.z);
+                
                 setTimeout(() => { isHarvesting = false; }, 200);
             }
         });
     }
+}
+
+function updateUI() { 
+    document.getElementById('money').innerText = Math.floor(stats.money); 
 }
 
 function animate() { requestAnimationFrame(animate); update(); renderer.render(scene, camera); }

@@ -1,68 +1,124 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
+:root { 
+    --neon: #06b6d4; 
+    --neon-red: #ff3131;
 }
 
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: #0a0b10; /* Darker for the neon look */
+    margin: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
 }
 
+/* Background Effects matching Hub */
+.bg-grid {
+    background-size: 50px 50px;
+    background-image: linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px), 
+                      linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+    position: fixed; inset: 0; z-index: -1;
+}
+.bg-glow {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.12) 0%, transparent 70%);
+    z-index: -1;
+}
+.scanline {
+    width: 100%; height: 2px; background: rgba(6, 182, 212, 0.03);
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 50;
+    animation: move-scanline 10s linear infinite;
+}
+@keyframes move-scanline { 0% { top: 0%; } 100% { top: 100%; } }
+
+/* Main UI Container */
 .wrapper {
-  width: 65vmin;
-  height: 75vmin;
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 20px;
-  background: #14161e;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-}
-
-.game-details {
-  color: #B8C6DC;
-  font-weight: 700;
-  font-size: 1.2rem;
-  padding: 20px 27px;
-  display: flex;
-  justify-content: space-between;
+    width: 95vw;
+    max-width: 420px;
+    background: rgba(8, 8, 10, 0.85);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(6, 182, 212, 0.15);
+    border-radius: 35px;
+    padding: 25px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .play-board {
-  height: 100%;
-  width: 100%;
-  display: grid;
-  background: #000;
-  grid-template: repeat(30, 1fr) / repeat(30, 1fr);
-  border: 1px solid #1a1c23;
+    height: 350px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: grid;
+    grid-template: repeat(30, 1fr) / repeat(30, 1fr);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    overflow: hidden;
 }
 
+/* Snake & Food */
+.play-board .head {
+    background: var(--neon);
+    box-shadow: 0 0 12px var(--neon);
+    border-radius: 4px;
+    z-index: 10;
+}
+.play-board .body {
+    background: rgba(6, 182, 212, 0.4);
+    border-radius: 2px;
+}
+.play-board .food {
+    background: var(--neon-red);
+    box-shadow: 0 0 15px var(--neon-red);
+    border-radius: 50%;
+    transform: scale(0.7);
+}
+
+/* Controls */
 .controls {
-  display: flex;
-  justify-content: space-evenly;
-  background: #14161e;
-  padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
 }
-
 .controls i {
-  padding: 15px;
-  text-align: center;
-  font-size: 1.3rem;
-  color: #B8C6DC;
-  cursor: pointer;
+    width: 55px; height: 45px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; cursor: pointer; transition: 0.2s;
+    color: #444;
+}
+.controls i:hover {
+    background: var(--neon); color: #000;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
 }
 
-@media screen and (max-width: 800px) {
-  .wrapper {
-    width: 90vmin;
-    height: 115vmin;
-  }
+/* Footer & Logo */
+.footer-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.reset-btn {
+    font-size: 9px; font-weight: 900; color: #441111;
+    text-transform: uppercase; letter-spacing: 2px;
+    background: transparent; border: none; cursor: pointer;
+    transition: 0.3s;
+}
+.reset-btn:hover { color: var(--neon-red); }
+
+.back-logo-link {
+    width: 130px;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+.back-logo-link:hover {
+    opacity: 1; filter: grayscale(0) drop-shadow(0 0 10px var(--neon));
+    transform: scale(1.05);
 }

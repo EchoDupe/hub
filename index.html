@@ -39,40 +39,27 @@
             background-size: 100% 4px; position: fixed; pointer-events: none; z-index: 100;
         }
 
-        /* Card Styling */
-        .game-card { 
+        /* Centered Professional Card */
+        .info-card { 
             background: rgba(10, 10, 15, 0.8); 
-            backdrop-filter: blur(20px); 
+            backdrop-filter: blur(25px); 
             border: 1px solid rgba(6, 182, 212, 0.1);
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
         
-        /* Active Hover */
-        .game-card.active:hover { 
-            border-color: var(--neon); 
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.15); 
-            transform: translateY(-10px) scale(1.02); 
-            cursor: pointer;
+        .glow-border {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon), transparent);
+            animation: border-slide 4s infinite linear;
         }
 
-        /* Coming Soon Style */
-        .game-card.disabled {
-            opacity: 0.4;
-            border: 1px dashed rgba(255, 255, 255, 0.1);
-            cursor: not-allowed;
+        @keyframes border-slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
-
-        /* Loading Screen */
-        #loader {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 1000; flex-direction: column;
-            align-items: center; justify-content: center;
-            font-family: 'Courier Prime', monospace;
-        }
-        #bar-container { width: 280px; height: 2px; background: #111; margin-top: 25px; border-radius: 10px; overflow: hidden; }
-        #bar { width: 0%; height: 100%; background: var(--neon); box-shadow: 0 0 15px var(--neon); transition: width 0.1s; }
     </style>
 </head>
 <body>
@@ -81,43 +68,42 @@
     <div class="bg-glow"></div>
     <div class="scanline"></div>
 
-    <div id="loader">
-        <div class="text-[10px] uppercase tracking-[0.5em] text-cyan-500 font-bold animate-pulse">Initializing_Simulation_Protocol</div>
-        <div id="bar-container"><div id="bar"></div></div>
-    </div>
-
     <nav class="w-full bg-black/40 border-b border-cyan-500/10 backdrop-blur-xl mb-12">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-10 py-8">
             <h1 class="text-3xl font-black italic text-cyan-500 tracking-tighter uppercase select-none">
                 ECHODUPE<span class="text-white">GAMES</span>
             </h1>
-            <div class="text-[10px] font-bold text-zinc-500 tracking-widest uppercase">Node: <span class="text-cyan-500">Active</span></div>
+            <div class="text-[10px] font-bold text-zinc-500 tracking-widest uppercase italic">System_Ver: <span class="text-cyan-500">2.0.6-BETA</span></div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6">
+    <main class="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center pt-10">
         
-        <div class="mb-16 text-center">
-            <img src="assets/title.png" alt="ECHODUPE" class="max-w-[350px] w-full h-auto drop-shadow-[0_0_30px_rgba(6,182,212,0.2)] mx-auto mb-6">
-            <p class="text-[10px] font-black uppercase tracking-[1em] text-zinc-600">Active Neural Interface</p>
+        <div class="mb-12 text-center">
+            <img src="assets/title.png" alt="ECHODUPE" class="max-w-[320px] w-full h-auto drop-shadow-[0_0_30px_rgba(6,182,212,0.2)] mx-auto mb-6">
         </div>
 
-        <div class="flex flex-col md:flex-row justify-center items-center gap-8 w-full max-w-4xl mx-auto">
+        <div class="info-card p-12 rounded-[50px] text-center w-full max-w-lg">
+            <div class="glow-border"></div>
             
-            <div class="game-card active p-10 rounded-[40px] text-center group w-full max-w-sm" onclick="boot('Snake/index.html')">
-                <span class="text-5xl mb-6 block group-hover:scale-110 transition-transform duration-500">🐍</span>
-                <h3 class="text-2xl font-black uppercase italic group-hover:text-cyan-500 transition">Neon_Snake</h3>
-                <p class="text-zinc-500 mt-2 text-[10px] font-bold tracking-widest uppercase">WASD Control Configured</p>
-                <div class="mt-6 text-cyan-500 opacity-0 group-hover:opacity-100 transition-all text-[10px] font-black tracking-widest">BOOT_SIMULATION ></div>
+            <div class="mb-6 flex justify-center">
+                <div class="w-16 h-16 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-center">
+                    <i class="fa-solid fa-microchip text-2xl text-cyan-500 animate-pulse"></i>
+                </div>
             </div>
 
-            <div class="game-card disabled p-10 rounded-[40px] text-center w-full max-w-sm">
-                <span class="text-5xl mb-6 block opacity-30">⏳</span>
-                <h3 class="text-2xl font-black uppercase italic text-zinc-500">COMING SOON!</h3>
-                <p class="text-cyan-500 mt-2 text-[10px] font-bold tracking-widest uppercase animate-pulse">Get ready to roll!</p>
-                <div class="mt-6 text-zinc-800 text-[10px] font-black tracking-widest">ENCRYPTED_NODE</div>
+            <h3 class="text-3xl font-black uppercase italic text-white tracking-tight">COMING SOON!</h3>
+            <p class="text-cyan-500 mt-3 text-xs font-black tracking-[0.3em] uppercase">Deployment in progress</p>
+            
+            <div class="mt-8 pt-8 border-t border-white/5">
+                <p class="text-zinc-500 text-[11px] font-bold uppercase tracking-[0.15em] leading-relaxed">
+                    Our neural gaming environment is currently undergoing <span class="text-zinc-300">System Calibration</span>. 
+                    Prepare for a high-fidelity simulation experience.
+                </p>
+                <p class="text-cyan-500/80 mt-6 text-[10px] font-black tracking-widest uppercase italic">
+                    Get ready to roll
+                </p>
             </div>
-
         </div>
 
     </main>
@@ -127,7 +113,7 @@
            target="_blank" 
            class="flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md border border-cyan-500/20 rounded-full group hover:border-cyan-500/50 transition-all duration-300">
             <div class="flex flex-col items-end">
-                <span class="text-[8px] font-black text-zinc-500 tracking-[0.2em] uppercase leading-none">System_Link</span>
+                <span class="text-[8px] font-black text-zinc-500 tracking-[0.2em] uppercase leading-none">External_Portal</span>
                 <span class="text-[10px] font-bold text-white group-hover:text-cyan-400 transition-colors uppercase italic">EchoDupe_Hub</span>
             </div>
             <div class="w-8 h-8 rounded-full border border-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/10 transition-all">
@@ -142,27 +128,10 @@
                 &copy; 2026 ECHODUPE INDUSTRIES.
             </p>
             <p class="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-800">
-                Maintained by <span class="text-cyan-500/50">Skitxoe</span>
+                System Maintained by <span class="text-cyan-500/50">Skitxoe</span>
             </p>
         </div>
     </footer>
 
-    <script>
-        function boot(url) {
-            const loader = document.getElementById('loader');
-            const bar = document.getElementById('bar');
-            loader.style.display = 'flex';
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    window.location.href = url;
-                } else {
-                    progress += Math.random() * 25;
-                    bar.style.width = Math.min(progress, 100) + '%';
-                }
-            }, 100);
-        }
-    </script>
 </body>
 </html>

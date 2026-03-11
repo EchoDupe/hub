@@ -11,76 +11,85 @@ let snakeBody = [];
 let setIntervalId;
 let score = 0;
 
-// Getting high score from the local storage
-let highScore = localStorage.getItem("high-score") || 0;
-highScoreElement.innerText = `High Score: ${highScore}`;
+// Load high score - Using unified key "snake-high-score"
+let highScore = localStorage.getItem("snake-high-score") || 0;
+highScoreElement.innerText = `Best: ${highScore}`;
 
 const updateFoodPosition = () => {
-    // Passing a random 1 - 30 value as food position
     foodX = Math.floor(Math.random() * 30) + 1;
     foodY = Math.floor(Math.random() * 30) + 1;
 }
 
 const handleGameOver = () => {
-    // Clearing the timer and reloading the page on game over
     clearInterval(setIntervalId);
     alert("Game Over! Press OK to replay...");
     location.reload();
 }
 
 const changeDirection = e => {
-    // Changing velocity value based on key press
-    if(e.key === "ArrowUp" && velocityY != 1) {
+    // We get the key code (e.g., 'w', 'ArrowUp')
+    const key = e.key ? e.key.toLowerCase() : e;
+
+    // UP: W or ArrowUp
+    if((key === "w" || key === "arrowup") && velocityY != 1) {
         velocityX = 0;
         velocityY = -1;
-    } else if(e.key === "ArrowDown" && velocityY != -1) {
+    } 
+    // DOWN: S or ArrowDown
+    else if((key === "s" || key === "arrowdown") && velocityY != -1) {
         velocityX = 0;
         velocityY = 1;
-    } else if(e.key === "ArrowLeft" && velocityX != 1) {
+    } 
+    // LEFT: A or ArrowLeft
+    else if((key === "a" || key === "arrowleft") && velocityX != 1) {
         velocityX = -1;
         velocityY = 0;
-    } else if(e.key === "ArrowRight" && velocityX != -1) {
+    } 
+    // RIGHT: D or ArrowRight
+    else if((key === "d" || key === "arrowright") && velocityX != -1) {
         velocityX = 1;
         velocityY = 0;
     }
 }
 
-// Calling changeDirection on each key click and passing key dataset value as an object
-controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
+// Support for clicking the on-screen buttons
+controls.forEach(button => button.addEventListener("click", () => changeDirection(button.dataset.key)));
 
 const initGame = () => {
     if(gameOver) return handleGameOver();
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
-    // Checking if the snake hit the food
     if(snakeX === foodX && snakeY === foodY) {
         updateFoodPosition();
-        snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
-        score++; // increment score by 1
+        snakeBody.push([foodY, foodX]);
+        score++;
         highScore = score >= highScore ? score : highScore;
-        localStorage.setItem("high-score", highScore);
+        localStorage.setItem("snake-high-score", highScore);
         scoreElement.innerText = `Score: ${score}`;
-        highScoreElement.innerText = `High Score: ${highScore}`;
+        highScoreElement.innerText = `Best: ${highScore}`;
     }
-    // Updating the snake's head position based on the current velocity
-    snakeX += velocityX;
-    snakeY += velocityY;
-    
-    // Shifting forward the values of the elements in the snake body by one
+
+    // Move Body
     for (let i = snakeBody.length - 1; i > 0; i--) {
         snakeBody[i] = snakeBody[i - 1];
     }
-    snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
+    snakeBody[0] = [snakeX, snakeY];
 
-    // Checking if the snake's head is out of wall, if so setting gameOver to true
+    // Move Head
+    snakeX += velocityX;
+    snakeY += velocityY;
+
+    // Wall Collision
     if(snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30) {
         return gameOver = true;
     }
 
     for (let i = 0; i < snakeBody.length; i++) {
-        // Adding a div for each part of the snake's body
-        html += `<div class="head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-        // Checking if the snake head hit the body, if so set gameOver to true
+        // First element is head, rest are body
+        let className = (i === 0) ? "head" : "body";
+        html += `<div class="${className}" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+        
+        // Self Collision
         if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
             gameOver = true;
         }
@@ -90,4 +99,4 @@ const initGame = () => {
 
 updateFoodPosition();
 setIntervalId = setInterval(initGame, 100);
-document.addEventListener("keyup", changeDirection);
+document.addEventListener("keydown", changeDirection);

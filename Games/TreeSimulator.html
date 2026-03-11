@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>EchoDupe | Tree</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoDupe | TreeSimulator</title>
     <link rel="icon" type="image/png" href="../assets/title.png">
     <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
     <style>
-        :root { --neon: #00ffff; --dark-gray: #555555; --bg: #000505; }
+        :root { --neon: #00ffff; --bg: #000a0a; --dark: #000505; }
         
         body { margin: 0; overflow: hidden; font-family: 'Courier New', monospace; background: #000; }
 
-        /* Hub Navigation Button */
+        /* Navigation */
         #hub-btn {
             position: absolute; top: 20px; right: 20px;
             padding: 10px 20px; background: rgba(0, 0, 0, 0.8);
@@ -19,7 +21,15 @@
         }
         #hub-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
 
-        /* Overlay & Menus */
+        /* UI HUD */
+        #ui {
+            position: absolute; top: 20px; left: 20px;
+            color: var(--neon); background: rgba(0,15,15,0.8);
+            padding: 15px; border: 1px solid var(--neon); display: none;
+            pointer-events: none; z-index: 10;
+        }
+
+        /* Menu Overlay */
         #menu-overlay {
             position: absolute; width: 100%; height: 100%;
             background: radial-gradient(circle, #001a1a, #000);
@@ -28,47 +38,16 @@
         }
 
         #play-btn {
-            padding: 15px 50px; font-size: 24px; font-weight: bold;
+            padding: 15px 45px; font-size: 20px; font-weight: bold;
             background: transparent; border: 2px solid var(--neon); color: var(--neon);
             cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 5px;
         }
         #play-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 30px var(--neon); }
 
-        /* HUD */
-        #ui {
-            position: absolute; top: 20px; left: 20px;
-            color: var(--neon); background: rgba(0,20,20,0.8);
-            padding: 20px; border: 1px solid var(--neon); display: none;
-            box-shadow: 0 0 15px rgba(0,255,255,0.2); pointer-events: none;
-        }
-
-        #minimap-container {
-            position: absolute; bottom: 20px; right: 20px;
-            width: 150px; height: 150px;
-            background: rgba(0, 10, 10, 0.8);
-            border: 2px solid var(--neon); display: none; overflow: hidden;
-        }
-
-        #shop-gui, #settings-gui {
-            display: none; position: absolute; left: 50%; top: 50%;
-            transform: translate(-50%, -50%); width: 320px;
-            background: #050505; color: var(--neon); padding: 30px;
-            border: 2px solid var(--neon); text-align: center;
-            box-shadow: 0 0 50px rgba(0,255,255,0.4); z-index: 101;
-        }
-
-        .btn {
-            background: #002222; color: var(--neon); border: 1px solid var(--neon);
-            padding: 12px; width: 100%; margin-top: 10px;
-            cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-        .btn:hover:not(:disabled) { background: var(--neon); color: #000; }
-
         .footer { 
             position: absolute; bottom: 15px; width: 100%; text-align: center; 
-            font-size: 0.8em; letter-spacing: 1px; pointer-events: none; z-index: 10;
+            font-size: 0.8em; letter-spacing: 1px; pointer-events: none; opacity: 0.5;
         }
-        .footer b { color: var(--neon); }
     </style>
 </head>
 <body>
@@ -76,136 +55,130 @@
 <a href="../index.html" id="hub-btn">BACK TO HUB</a>
 
 <div id="menu-overlay">
-    <h1 style="font-size: 45px; text-shadow: 0 0 20px var(--neon); margin: 0;">TREE SIMULATOR</h1>
-    <p style="letter-spacing: 3px; opacity: 0.7;">FOG_HARVEST_V1.0</p><br>
+    <h1 style="letter-spacing: 12px; text-shadow: 0 0 20px var(--neon); margin: 0;">TREE_SIMULATOR</h1>
+    <p style="opacity: 0.6; margin-top: 10px; margin-bottom: 30px;">[ PERFORMANCE_MODE_ACTIVE ]</p>
     <button id="play-btn" onclick="startGame()">INITIALIZE</button>
-    <div class="footer"><span>DESIGNED BY </span><b>SKITXOE</b></div>
+    <div class="footer">DESIGNED BY <b>SKITXOE</b></div>
 </div>
 
 <div id="ui">
-    <span style="font-size: 11px; opacity: 0.6;">CAPITAL_RESERVES</span><br>
-    <span style="font-size: 32px; font-weight: bold;">$<span id="money">0</span></span><br>
-    <div style="margin-top:10px; font-size: 12px; border-top: 1px solid #004444; padding-top: 5px;">
-        WORKERS: <span id="workerCount">0</span> | REBIRTHS: <span id="rebirthCount">0</span>
-    </div>
-</div>
-
-<div id="minimap-container"><canvas id="minimap-canvas" width="150" height="150"></canvas></div>
-
-<div id="shop-gui">
-    <h2 style="letter-spacing: 5px;">TERMINAL</h2>
-    <button class="btn" onclick="buyWorker()">HIRE NPC: $<span id="wP">25</span></button>
-    <button class="btn" onclick="buyBoost()">UPGRADE TOOLS: $<span id="bP">100</span></button>
-    <button class="btn" onclick="doRebirth()" style="border-color:#ff00ff; color:#ff00ff;">REBIRTH: $5000</button>
-    <button class="btn" onclick="closeGui('shop-gui')" style="margin-top:20px; background:#440000; border:none; color:#fff;">EXIT</button>
+    <span style="font-size: 10px; opacity: 0.7;">DATA_EXTRACTED</span><br>
+    <span style="font-size: 24px; font-weight: bold;">$<span id="money">0</span></span>
 </div>
 
 <script>
-let stats = { money: 25, workers: 0, mult: 1, wPrice: 25, bPrice: 100, rebirths: 0 };
+let stats = { money: 0 };
 let gameStarted = false;
-let workerNPCs = [];
 
-// Three.js Logic
+// 1. Core Scene Setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000505);
-scene.fog = new THREE.FogExp2(0x001111, 0.04);
+// Fog is now lighter and starts further out for better visibility
+scene.fog = new THREE.Fog(0x000000, 30, 160);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.body.appendChild(renderer.domElement);
 
-scene.add(new THREE.AmbientLight(0x404040, 2));
-const light = new THREE.PointLight(0x00ffff, 2, 50); light.position.set(0, 8, -25); scene.add(light);
+// 2. Lighting
+scene.add(new THREE.AmbientLight(0x404040, 2.5));
+const dirLight = new THREE.DirectionalLight(0x00ffff, 1);
+dirLight.position.set(10, 20, 10);
+scene.add(dirLight);
 
-// Ground & Grid
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({color: 0x050505}));
-ground.rotation.x = -Math.PI/2; scene.add(ground);
-const grid = new THREE.GridHelper(500, 50, 0x00ffff, 0x001111);
-grid.position.y = 0.05; scene.add(grid);
+// 3. Environment
+const grid = new THREE.GridHelper(400, 40, 0x00ffff, 0x001515);
+scene.add(grid);
 
-// Shop Counter
-const shopGroup = new THREE.Group();
-const counter = new THREE.Mesh(new THREE.BoxGeometry(6, 2, 2), new THREE.MeshStandardMaterial({color: 0x111111, emissive: 0x00ffff, emissiveIntensity: 0.2}));
-counter.position.set(0, 1, -28); scene.add(counter);
-
-// Tree Generation
+// 4. Optimized "Data Trees"
 let trees = [];
-for(let i=0; i<60; i++) {
-    const tree = new THREE.Group();
-    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 3), new THREE.MeshStandardMaterial({color: 0x221100}));
-    const leaves = new THREE.Mesh(new THREE.ConeGeometry(1.5, 4, 5), new THREE.MeshStandardMaterial({color: 0x002222}));
-    leaves.position.y = 2.5; tree.add(trunk, leaves);
-    let rx = (Math.random()-0.5)*200; let rz = (Math.random()-0.5)*200;
-    if(rz < -20 && Math.abs(rx) < 10) rz -= 15; // Move trees away from shop
-    tree.position.set(rx, 0, rz); scene.add(tree);
-    trees.push({obj: tree, x: rx, z: rz});
-}
+const trunkGeo = new THREE.CylinderGeometry(0.2, 0.2, 3, 6);
+const leafGeo = new THREE.OctahedronGeometry(1.5, 0); 
+const trunkMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+const leafMat = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x003333 });
 
-// Game Functions
-function startGame() { 
-    load(); gameStarted = true; 
-    document.getElementById("menu-overlay").style.display = "none"; 
-    document.getElementById("ui").style.display = "block"; 
-    document.getElementById("minimap-container").style.display = "block"; 
-    document.body.requestPointerLock(); 
-}
-
-function buyWorker() { if(stats.money >= stats.wPrice) { stats.money -= stats.wPrice; stats.workers++; stats.wPrice = Math.floor(stats.wPrice * 1.4); spawnNPC(); save(); } }
-function buyBoost() { if(stats.money >= stats.bPrice) { stats.money -= stats.bPrice; stats.mult += 0.5; stats.bPrice = Math.floor(stats.bPrice * 2.2); save(); } }
-function closeGui(id) { document.getElementById(id).style.display = "none"; document.body.requestPointerLock(); }
-function save() { localStorage.setItem('Echo_Tree_Save', JSON.stringify(stats)); }
-function load() { let s = localStorage.getItem('Echo_Tree_Save'); if(s) stats = JSON.parse(s); for(let i=0; i<stats.workers; i++) spawnNPC(); }
-
-function spawnNPC() {
+function createTree() {
     const group = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.7), new THREE.MeshStandardMaterial({color: 0x004444}));
-    body.position.y = 0.9; group.add(body);
-    group.position.set((Math.random()-0.5)*40, 0, (Math.random()-0.5)*40); scene.add(group);
-    workerNPCs.push({ mesh: group, tx: (Math.random()-0.5)*150, tz: (Math.random()-0.5)*150 });
+    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+    const leaves = new THREE.Mesh(leafGeo, leafMat);
+    leaves.position.y = 2.5;
+    group.add(trunk, leaves);
+    
+    let rx = (Math.random() - 0.5) * 160;
+    let rz = (Math.random() - 0.5) * 160;
+    group.position.set(rx, 0, rz);
+    
+    scene.add(group);
+    return { obj: group, x: rx, z: rz };
 }
 
-// Controls
-let player = { x:0, z:10, yaw:0 };
+// Generate 45 trees (Good balance of density vs performance)
+for(let i=0; i<45; i++) trees.push(createTree());
+
+// 5. Movement & Controls
+let player = { x: 0, z: 15, yaw: 0 };
 let keys = {};
 document.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
 document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
-document.addEventListener("mousemove", e => { if(document.pointerLockElement === document.body) player.yaw -= e.movementX * 0.002; camera.rotation.set(0, player.yaw, 0); });
-document.addEventListener("mousedown", () => { if(gameStarted && Math.sqrt(player.x**2 + (player.z + 28)**2) < 6) { document.exitPointerLock(); document.getElementById("shop-gui").style.display = "block"; } });
+
+document.addEventListener("mousemove", e => {
+    if(document.pointerLockElement === document.body) {
+        player.yaw -= e.movementX * 0.002;
+        camera.rotation.set(0, player.yaw, 0);
+    }
+});
+
+function startGame() {
+    gameStarted = true;
+    document.getElementById("menu-overlay").style.display = "none";
+    document.getElementById("ui").style.display = "block";
+    document.body.requestPointerLock();
+}
 
 function update() {
     if(!gameStarted) return;
-    let speed = keys["shift"] ? 0.6 : 0.25;
+
+    let speed = keys["shift"] ? 0.7 : 0.3;
+    // WASD Movement
     if(keys["w"]) { player.x -= Math.sin(player.yaw) * speed; player.z -= Math.cos(player.yaw) * speed; }
     if(keys["s"]) { player.x += Math.sin(player.yaw) * speed; player.z += Math.cos(player.yaw) * speed; }
-    camera.position.set(player.x, 3.5, player.z);
+    if(keys["a"]) { player.x -= Math.cos(player.yaw) * speed; player.z += Math.sin(player.yaw) * speed; }
+    if(keys["d"]) { player.x += Math.cos(player.yaw) * speed; player.z -= Math.sin(player.yaw) * speed; }
 
-    // Tree Harvest
+    camera.position.set(player.x, 3, player.z);
+
+    // Collision / Harvest Check
     trees.forEach(t => {
-        if(Math.sqrt((player.x - t.x)**2 + (player.z - t.z)**2) < 3) {
-            stats.money += 10 * stats.mult;
-            t.obj.position.set((Math.random()-0.5)*200, 0, (Math.random()-0.5)*200);
-            t.x = t.obj.position.x; t.z = t.obj.position.z;
-            save();
+        let dist = Math.sqrt((player.x - t.x)**2 + (player.z - t.z)**2);
+        if(dist < 2.5) {
+            stats.money += 1;
+            document.getElementById("money").innerText = stats.money;
+            
+            // Reposition harvested tree
+            t.x = (Math.random() - 0.5) * 160;
+            t.z = (Math.random() - 0.5) * 160;
+            t.obj.position.set(t.x, 0, t.z);
         }
+        // Small animation for leaves
+        t.obj.children[1].rotation.y += 0.01;
     });
-
-    // NPC Logic
-    workerNPCs.forEach(n => {
-        let dx = n.tx - n.mesh.position.x, dz = n.tz - n.mesh.position.z, dist = Math.sqrt(dx*dx+dz*dz);
-        if(dist > 1) { n.mesh.position.x += (dx/dist)*0.1; n.mesh.position.z += (dz/dist)*0.1; }
-        else { n.tx = (Math.random()-0.5)*150; n.tz = (Math.random()-0.5)*150; }
-        stats.money += 0.02 * stats.mult;
-    });
-
-    document.getElementById("money").innerText = Math.floor(stats.money);
-    document.getElementById("workerCount").innerText = stats.workers;
-    document.getElementById("wP").innerText = stats.wPrice;
-    document.getElementById("bP").innerText = stats.bPrice;
 }
 
-function animate() { update(); renderer.render(scene, camera); requestAnimationFrame(animate); }
+function animate() {
+    requestAnimationFrame(animate);
+    update();
+    renderer.render(scene, camera);
+}
 animate();
+
+// Handle Window Resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 </script>
 </body>
 </html>

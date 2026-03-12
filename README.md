@@ -1,44 +1,42 @@
-# 🌐 EchoDupe | Games Hub
+<div align="center">
 
-The central terminal for all EchoDupe simulations and game environments.
+<img src="assets/title.png" width="300" alt="EchoDupe Games Logo">
 
-**Live Site:** [https://echodupe.github.io/hub/](https://echodupe.github.io/Games/)
+# 🌐 ECHODUPE | NEURAL GAMES HUB
+**The central terminal for high-fidelity EchoDupe game environments.**
 
----
-
-## 📂 Project Structure
-
-To ensure all internal links and assets function correctly, the repository follows this strict architecture:
-
-* `index.html` - The main navigation interface (The Hub).
-* `assets/` - Contains branding and UI elements like `title.png`.
-* `Games/` - Directory for standalone game files.
-    * `TreeSimulator.html` - Atmospheric 3D fog-harvesting simulation.
+[![System Status](https://img.shields.io/badge/System_Status-CALIBRATING-06b6d4?style=for-the-badge&logo=probot&logoColor=white)](https://echodupe.github.io/Games/)
+[![Build Version](https://img.shields.io/badge/Build-v2.0.6--BETA-white?style=for-the-badge)](https://echodupe.github.io/Games/)
 
 ---
 
-## 🎮 Current Simulations
+### ⚡ OPERATIONAL SUMMARY
+The environment is currently undergoing **System Calibration** and **Neural Path Syncing**. 
+Current nodes are restricted as we upgrade to the next generation of the **EchoDupe Evolution Framework**.
 
-### 🌲 Tree Simulator
-An experimental 3D environment built with **Three.js**. 
-* **Objective:** Harvest fog-energy from trees to generate capital.
-* **Automation:** Purchase worker NPCs to scale production.
-* **Progression:** Features a Rebirth system with permanent multipliers.
-* **Visuals:** Utilizes `FogExp2` and custom neon shaders for a "cyber-forest" aesthetic.
+*Prepare for a high-fidelity simulation experience.*
 
----
-
-## 🛠️ Development Setup
-
-If you are cloning this repository to work on it locally:
-
-1.  **Cloning:** `git clone https://github.com/echodupe/hub.git`
-2.  **Relative Paths:** All game files in the `/Games/` folder use `../` to access the root `assets/` and `index.html`. Ensure this structure is maintained to avoid 404 errors.
-3.  **Engine:** Powered by the Three.js WebGL library via CDN.
+**"Get ready to roll."**
 
 ---
 
-## ✍️ Credits
+### 🔗 CONNECTED NETWORKS
+[**MAIN HUB PORTAL**](https://echodupe-hub.netlify.app) • [**LIVE TERMINAL**](https://echodupe.github.io/Games/)
 
-**Designed, Developed, and Maintained by SKITXOE.**
-*EchoDupe Evolution Framework V6.5*
+---
+
+### 🛠️ SPECIFICATIONS
+| Component | Status |
+| :--- | :--- |
+| **Neural Interface** | Active / Stable |
+| **Simulation Core** | Optimizing Assets |
+| **Data Stream** | v2.0.6-BETA |
+
+---
+
+<p align="center">
+  <sub>Designed and Maintained by <b>SKITXOE</b><br>
+  &copy; 2026 ECHODUPE INDUSTRIES</sub>
+</p>
+
+</div>

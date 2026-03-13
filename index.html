@@ -1,82 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
-    <title>Basketball Legends - topVAZ</title>
-    <meta name="robots" content="noindex,nofollow" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
-
-<body>
-    <div id="content"></div>
-    <div id="orientation"></div>
-    <div id="loader">Loading ...</div>
-    <script type="text/javascript" src="assets/lib/nape.min.js">
-        var nape = "nape.min.js";
-    </script>
-    <script type="text/javascript" src="assets/lib/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="assets/lib/easeljs-0.8.2.combined.js"></script>
-    <script type="text/javascript" src="assets/lib/bluebird.min.js"></script>
-    <script type="text/javascript" src="assets/lib/phaser.min.js"></script>
-    <script type="text/javascript" src="assets/lib/phaser-cachebuster.min.js"></script>
-    <script type="text/javascript" src="assets/lib/phaser-super-storage.min.js"></script>
-    <script type="text/javascript" src="assets/lib/dragonBones.min.js"></script>
-
-    <script type="text/javascript">
-        var useEvents = (typeof(Event) === 'function');
-
-        var myDispatchEvent = function (name){
-            var event;
-            if (useEvents){
-                event =  new Event(name);
-            }else{
-                event = document.createEvent('Event');
-                event.initEvent(name, true, true);
-            }
-            document.getElementById("content").dispatchEvent(event);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoDupe | Games Hub</title>
+    <link rel="icon" type="image/png" href="assets/title.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --neon: #06b6d4; }
+        body { 
+            background-color: #030303; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        window["GD_OPTIONS"] = {
-            "gameId": "3dbd133d0cd9468bafdf2c9812290f4b",
-            "onEvent": function(event) {
-                switch (event.name) {
-                    case "SDK_GAME_START":
-                        // advertisement done, resume game logic and unmute audio
-                        myDispatchEvent('SDK_GAME_START');
-                        break;
-                    case "SDK_GAME_PAUSE":
-                        // pause game logic / mute audio
-                        myDispatchEvent('SDK_GAME_PAUSE');
-                        // document.getElementById("content").dispatchEvent(new Event("SDK_GAME_PAUSE"));
-                        break;
-                    case "SDK_GDPR_TRACKING":
-                        // this event is triggered when your user doesn't want to be tracked
-                        console.log("SDK_GDPR_TRACKING");
-                        break;
-                    case "SDK_GDPR_TARGETING":
-                        // this event is triggered when your user doesn't want personalised targeting of ads and such
-                        console.log("SDK_GDPR_TARGETING");
-                        break;
-                    case "SDK_READY":
-                        // this event is triggered when your user doesn't want personalised targeting of ads and such
-                        console.log("SDK_READY");
-                        break;
-                }
-            },
-        };
-        (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = 'js/main.min.js';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'gamedistribution-jssdk'));
-</script>
+        .bg-grid {
+            background-size: 45px 45px;
+            background-image: linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px), 
+                              linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+            position: fixed; inset: 0; z-index: -1;
+        }
+        .bg-glow {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at 50% 20%, rgba(6, 182, 212, 0.12) 0%, transparent 60%);
+            z-index: -1; pointer-events: none;
+        }
 
-<script type="text/javascript" src="basketball_legends_2020.min.js?22cd1e78f00425837fa0"></script></body>
+        .scanline {
+            width: 100%; height: 100vh; 
+            background: linear-gradient(to bottom, transparent 50%, rgba(6, 182, 212, 0.02) 50%);
+            background-size: 100% 4px; position: fixed; pointer-events: none; z-index: 100;
+        }
+
+        .info-card { 
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(10, 10, 15, 0.9); 
+            border-radius: 50px;
+            overflow: hidden; 
+            padding: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background-image: conic-gradient(transparent, transparent, transparent, var(--neon));
+            animation: rotate-border 4s linear infinite;
+        }
+
+        .info-card-inner {
+            background: #08080a;
+            width: 100%;
+            height: 100%;
+            border-radius: 48px;
+            padding: 3rem;
+            z-index: 1;
+            text-align: center;
+            backdrop-filter: blur(25px);
+        }
+
+        @keyframes rotate-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .game-node {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(6, 182, 212, 0.1);
+        }
+        .game-node:hover {
+            border-color: var(--neon);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="scanline"></div>
+
+    <nav class="w-full bg-black/40 border-b border-cyan-500/10 backdrop-blur-xl mb-12">
+        <div class="max-w-7xl mx-auto flex justify-center items-center px-10 py-8">
+            <h1 class="text-4xl font-black italic text-cyan-500 tracking-tighter uppercase select-none">
+                ECHODUPE<span class="text-white">GAMES</span>
+            </h1>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center pt-10">
+        
+        <div class="mb-12 text-center">
+            <img src="assets/title.png" alt="ECHODUPE" class="max-w-[320px] w-full h-auto drop-shadow-[0_0_30px_rgba(6,182,212,0.2)] mx-auto mb-6">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6 w-full max-w-[500px] mb-12">
+            <a href="games/basketball-legends/index.html" class="game-node bg-zinc-900/50 p-6 rounded-3xl flex items-center justify-between group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
+                        <i class="fa-solid fa-basketball text-cyan-500"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-black italic text-white uppercase tracking-tight">Basketball Legends</h4>
+                        <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Node_01 // Sports_Sim</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-zinc-700 group-hover:text-cyan-500 transition-colors"></i>
+            </a>
+        </div>
+
+        <div class="info-card">
+            <div class="info-card-inner">
+                <div class="mb-6 flex justify-center">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-microchip text-2xl text-cyan-500 animate-pulse"></i>
+                    </div>
+                </div>
+
+                <h3 class="text-3xl font-black uppercase italic text-white tracking-tight">MORE COMING SOON!</h3>
+                <p class="text-cyan-500 mt-3 text-xs font-black tracking-[0.3em] uppercase">Deployment in progress</p>
+                
+                <div class="mt-8 pt-8 border-t border-white/5">
+                    <p class="text-zinc-500 text-[11px] font-bold uppercase tracking-[0.15em] leading-relaxed">
+                        Our neural gaming environment is currently undergoing <span class="text-zinc-300">System Calibration</span>. 
+                        Prepare for a high-fidelity simulation experience.
+                    </p>
+                    <p class="text-cyan-500/80 mt-6 text-[10px] font-black tracking-widest uppercase italic">
+                        Get ready to roll
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="fixed bottom-8 left-10 z-[60]">
+        <div class="flex flex-col">
+            <span class="text-[8px] font-black text-zinc-600 tracking-[0.3em] uppercase leading-none mb-1">Build_Registry</span>
+            <span id="app-version" class="text-[10px] font-bold text-zinc-400 uppercase italic tracking-wider">v1.0.1-BETA</span>
+        </div>
+    </div>
+
+    <div class="fixed bottom-6 right-6 z-[60]">
+        <a href="https://echodupe-hub.netlify.app" 
+           target="_blank" 
+           class="flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md border border-cyan-500/20 rounded-full group hover:border-cyan-500/50 transition-all duration-300">
+            <div class="flex flex-col items-end">
+                <span class="text-[8px] font-black text-zinc-500 tracking-[0.2em] uppercase leading-none">External_Portal</span>
+                <span class="text-[10px] font-bold text-white group-hover:text-cyan-400 transition-colors uppercase italic">EchoDupe_Hub</span>
+            </div>
+            <div class="w-8 h-8 rounded-full border border-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/10 transition-all">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-cyan-500"></i>
+            </div>
+        </a>
+    </div>
+
+    <footer class="py-24 border-t border-cyan-500/10 mt-24">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-600 mb-2">
+                &copy; 2026 ECHODUPE INDUSTRIES.
+            </p>
+            <p class="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-800">
+                System Maintained by <span class="text-cyan-500/50">Skitxoe</span>
+            </p>
+        </div>
+    </footer>
+
+    <script src="version.js"></script>
+</body>
 </html>

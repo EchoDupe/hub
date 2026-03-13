@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui, shrink-to-fit=no">
         <meta name="apple-mobile-web-app-capable" content="yes">
-
+        
         <title>EchoDupe | Monkey Mart</title>
         <link rel="icon" type="image/png" href="assets/title.png">
 
@@ -40,12 +40,14 @@
                 background-position: top;
             }
 
-            /* THE EXIT BUTTON STYLE */
-            #return-terminal {
+            /* FLOATING HUB BUTTON - SITS ON TOP WITHOUT BREAKING ENGINE */
+            #hub-overlay {
                 position: fixed;
                 top: 15px;
                 right: 15px;
-                z-index: 2147483647 !important;
+                z-index: 999999;
+            }
+            #hub-overlay button {
                 background: rgba(0, 0, 0, 0.8);
                 border: 1px solid #06b6d4;
                 color: #06b6d4;
@@ -54,40 +56,17 @@
                 font-size: 11px;
                 font-weight: 900;
                 text-transform: uppercase;
-                letter-spacing: 1px;
-                cursor: pointer !important;
+                cursor: pointer;
                 box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
-                transition: all 0.2s;
-            }
-            #return-terminal:hover {
-                background: #06b6d4;
-                color: #000;
             }
 
-            .canvas-app-progress {
-                position: absolute;
-                background-color: #0A8A40;
-                height: 30px;
-                margin-top: -30px;
-                width: 100%;
-            }
-
-            .canvas-app-progress-bar {
-                font-size: 12px;
-                height: 30px;
-                color: rgb(255, 255, 255);
-                background-color: #FFE333;
-                text-align: center;
-                line-height: 20px;
-            }
-
-            .buttons-background {
-                display: none;
-            }
+            .buttons-background { display: none; }
         </style>
     </head>
     <body>
-        <button id="return-terminal">EXIT_TO_HUB</button>
+        <div id="hub-overlay">
+            <button onclick="window.location.replace('https://echodupe.github.io/Games/')">Back to Hub</button>
+        </div>
 
         <div id="app-container" class="canvas-app-container">
             <div id="canvas-container" class="canvas-app-canvas-container">
@@ -100,28 +79,19 @@
         </div>
 
         <script id="engine-loader" type="text/javascript" src="dmloader.js"></script>
-
+        
         <script id="engine-setup" type="text/javascript">
             var extra_params = {
-                archive_location_filter: function(path) {
-                    return ("archive" + path + "");
-                },
+                archive_location_filter: function(path) { return ("archive" + path + ""); },
                 engine_arguments: ["--verify-graphics-calls=false", ],
                 custom_heap_size: 67108864,
                 full_screen_container: "#canvas-container",
                 disable_context_menu: true
             }
-
             Module['INITIAL_MEMORY'] = extra_params.custom_heap_size;
-
-            Module['onRuntimeInitialized'] = function() {
-                Module.runApp("canvas", extra_params);
-            };
-
+            Module['onRuntimeInitialized'] = function() { Module.runApp("canvas", extra_params); };
             Module["locateFile"] = function(path, scriptDirectory) {
-                if (path == "dmengine.wasm" || path == "dmengine_release.wasm" || path == "dmengine_headless.wasm") {
-                    path = "MonkeyMart.wasm";
-                }
+                if (path == "dmengine.wasm" || path == "dmengine_release.wasm" || path == "dmengine_headless.wasm") { path = "MonkeyMart.wasm"; }
                 return scriptDirectory + path;
             };
 
@@ -139,16 +109,13 @@
                 var progress_bar_bg = document.getElementById('progress-bar-bg');
                 var innerWidth = window.innerWidth;
                 var innerHeight = window.innerHeight;
-                
                 if (prevInnerWidth == innerWidth && prevInnerHeight == innerHeight) { return; }
                 prevInnerWidth = innerWidth;
                 prevInnerHeight = innerHeight;
-
                 app_container.style.width = innerWidth + "px";
                 app_container.style.height = innerHeight + "px";
                 game_canvas.width = innerWidth;
                 game_canvas.height = innerHeight;
-
                 var bar_h = innerWidth < innerHeight ? innerWidth : innerHeight;
                 progress_bar_bg.width = Math.min(Math.ceil(bar_h * 0.06 * 300 / 24), innerWidth * 0.8);
                 progress_bar_bg.style.marginLeft = -progress_bar_bg.width / 2 + "px";
@@ -211,26 +178,11 @@
             Progress.updateProgress = function(percentage) {
                 var fg = document.getElementById('progress-bar-fg');
                 fg.style.clip = "rect(0px," + fg.width * percentage / 100 + "px," + fg.height + "px," + "0px)"
-                if (isNaN(percentage)) {
-                    document.getElementById('progress-bar-root').style.visibility = "hidden";
-                }
+                if (isNaN(percentage)) { document.getElementById('progress-bar-root').style.visibility = "hidden"; }
             };
             Progress.addProgress = function() { document.getElementById('progress-bar-root').style.visibility = "visible" }
             Progress.removeProgress = function() { document.getElementById('progress-bar-root').style.visibility = "hidden"; }
             EngineLoader.load("canvas", "MonkeyMart");
-        </script>
-
-        <script type="text/javascript">
-            // SCRIPT FOR THE EXIT BUTTON FUNCTION
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('return-terminal').addEventListener('click', function() {
-                    window.location.replace("https://echodupe.github.io/Games/");
-                });
-                
-                // Keep title locked
-                var targetTitle = "EchoDupe | Monkey Mart";
-                setInterval(function() { if (document.title !== targetTitle) document.title = targetTitle; }, 1000);
-            });
         </script>
         <script type="text/javascript" src="GameAnalytics.js"></script>
     </body>

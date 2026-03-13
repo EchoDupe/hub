@@ -52,8 +52,7 @@
 
         .game-card::after {
             content: '';
-            position: absolute;
-            inset: 0;
+            position: absolute; inset: 0;
             border-radius: 20px;
             background: linear-gradient(180deg, transparent, rgba(6, 182, 212, 0.1));
             opacity: 0;
@@ -69,8 +68,8 @@
         .game-card:hover::after { opacity: 1; }
 
         .icon-box {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(6, 182, 212, 0.1);
             border-radius: 18px;
@@ -81,13 +80,22 @@
             position: relative;
             z-index: 2;
             transition: all 0.5s;
+            overflow: hidden;
+            padding: 12px;
+        }
+
+        .icon-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.3));
         }
 
         .game-card:hover .icon-box {
             background: rgba(6, 182, 212, 0.1);
             border-color: var(--neon);
             box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
-            transform: rotate(-5deg);
+            transform: rotate(-5deg) scale(1.1);
         }
 
         /* Glass Text Effect */
@@ -98,7 +106,6 @@
             text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
         }
 
-        /* Fancy Border Animation for Info Card */
         .info-card { 
             position: relative; width: 100%; max-width: 550px;
             background: #08080a; border-radius: 30px;
@@ -128,12 +135,26 @@
             </div>
 
             <div class="flex flex-wrap justify-center gap-8">
+                
                 <a href="basketball-legends/index.html" class="game-card">
                     <div class="icon-box">
-                        <i class="fa-solid fa-basketball text-3xl text-cyan-500"></i>
+                        <img src="basketball-legends/assets/images/logo.png" alt="Basketball Legends">
                     </div>
                     <span class="glitch-text text-sm text-white mb-1">BASKETBALL LEGENDS</span>
                     <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Sector_01 // Online</span>
+                    
+                    <div class="absolute bottom-4 right-4 flex items-center gap-2">
+                        <span class="text-[7px] font-black text-zinc-600 uppercase">Live</span>
+                        <div class="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]"></div>
+                    </div>
+                </a>
+
+                <a href="cookieclicker/index.html" class="game-card">
+                    <div class="icon-box">
+                        <img src="cookieclicker/img/perfectCookie.png" alt="Cookie Clicker">
+                    </div>
+                    <span class="glitch-text text-sm text-white mb-1">COOKIE CLICKER</span>
+                    <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Sector_02 // Online</span>
                     
                     <div class="absolute bottom-4 right-4 flex items-center gap-2">
                         <span class="text-[7px] font-black text-zinc-600 uppercase">Live</span>
@@ -147,6 +168,7 @@
                     </div>
                     <span class="text-[10px] font-bold text-zinc-600 tracking-widest uppercase">Initializing...</span>
                 </div>
+
             </div>
         </section>
 

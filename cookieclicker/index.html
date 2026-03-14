@@ -10,42 +10,43 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
 <style>
-    /* FIXED HUB BUTTON STYLES */
+    /* THE BUTTON FIX - FORCING VISIBILITY */
     #return-terminal {
         position: fixed !important;
-        top: 20px !important;
-        left: 20px !important;
-        z-index: 999999999 !important; /* Force to the absolute front */
-        background: rgba(15, 15, 20, 0.9) !important;
-        border: 1px solid rgba(6, 182, 212, 0.8) !important;
+        top: 10px !important;
+        left: 10px !important;
+        z-index: 2147483647 !important; /* Maximum possible z-index */
+        background: #000000 !important; /* Solid black to stand out */
+        border: 2px solid #06b6d4 !important;
         color: #06b6d4 !important;
-        padding: 10px 18px !important;
-        border-radius: 12px !important;
+        padding: 8px 15px !important;
+        border-radius: 8px !important;
         font-family: 'Helvetica', Arial, sans-serif !important;
         font-weight: bold !important;
-        text-decoration: none !important;
-        display: flex !important; /* Ensure the icon and text sit side-by-side */
+        display: flex !important;
         align-items: center !important;
         gap: 8px !important;
-        backdrop-filter: blur(10px) !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 0 20px rgba(6, 182, 212, 0.4) !important;
-        text-transform: uppercase !important;
-        font-size: 11px !important;
-        letter-spacing: 1px !important;
+        box-shadow: 0 0 15px rgba(6, 182, 212, 0.8) !important;
         cursor: pointer !important;
-        user-select: none !important;
-        -webkit-appearance: none !important;
+        text-transform: uppercase !important;
+        font-size: 12px !important;
     }
+
     #return-terminal:hover {
         background: #06b6d4 !important;
         color: #000 !important;
-        box-shadow: 0 0 30px rgba(6, 182, 212, 0.8) !important;
-        transform: translateY(-2px) !important;
     }
-    /* Ensure the icon renders correctly */
-    #return-terminal i {
-        font-size: 14px !important;
+
+    /* REMOVING THE AD SECTION */
+    #sectionRight, #support, .ifNoAds, #smallSupport, .adsbygoogle {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+    }
+
+    /* Shift the game over to fill the empty space from the ads */
+    #sectionMiddle {
+        right: 0 !important;
     }
 </style>
 
@@ -160,61 +161,7 @@
         </div>
 
         <div id="sectionRight" class="inset">
-            <div class="ifNoAds" style="width:300px;text-align:center;padding:8px 0px;background:rgba(0,0,0,0.95);font-size:10px;opacity:0.5;text-shadow:0px 0px 2px #000,0px 1px 0px #000;text-align:center;">
-                Cookie Clicker is mainly supported by ads.<br>Consider unblocking our site or checking out our <a href="https://www.patreon.com/dashnet" target="_blank">Patreon</a>!
             </div>
-            <div id="smallSupport" style="width:300px;text-align:center;padding-bottom:40px;background:rgba(0,0,0,0.5);position:relative;z-index:100;">
-                
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <ins class="adsbygoogle"
-                     style="display:block;margin:auto;width:300px;max-height:300px;overflow:hidden;"
-                     data-ad-client="ca-pub-8491708950677704"
-                     data-ad-slot="7077525342"
-                     data-ad-format="rectangle"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-                
-                <div class="supportComment">^ Sponsored link ^</div>
-            </div>
-            <div id="store">
-                <div id="storeTitle" class="inset title zoneTitle">Store</div>
-                <div id="toggleUpgrades" class="storeSection upgradeBox"></div>
-                <div id="techUpgrades" class="storeSection upgradeBox"></div>
-                <div id="vaultUpgrades" class="storeSection upgradeBox"></div>
-                <div id="upgrades" class="storeSection upgradeBox"></div>
-                <div id="products" class="storeSection"></div>
-            </div>
-            
-            <div id="detectAds" class="adBanner" style="background:transparent;width:1px;height:1px;"></div>
-            <div id="support" style="margin-top:130px;">
-                <div class="supportComment">v Sponsored links v</div>
-                <div style="position:relative;">
-                
-                    <div style="position:relative;z-index:100;min-height:250px;">
-                    
-                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                        <ins class="adsbygoogle"
-                             style="display:block;margin:auto;"
-                             data-ad-client="ca-pub-8491708950677704"
-                             data-ad-slot="9780186019"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                        <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
-                        
-                        <div style="height:16px;"></div>
-                        
-                        <a class="ad" id="aqad" href="http://www.aq.com/landing/cookie/?utm_campaign=AQW_CookieClicker&utm_source=CookieClicker" target="_blank" title="AdventureQuest Worlds" style="background:url(img/aqworldsbanner.jpg) no-repeat;width:300px;height:64px;display:block;position:relative;margin:0px auto;">
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
         
         <div id="focusButtons">
             <div id="focusLeft" class="title">Cookie</div>
@@ -235,9 +182,7 @@
 </div>
 
 <script type="text/javascript">
-    // GLOBAL REDIRECT & TITLE LOCK SCRIPT
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. Handle the Hub Button
         var btn = document.getElementById('return-terminal');
         if (btn) {
             btn.addEventListener('click', function(e) {
@@ -247,7 +192,6 @@
             }, true);
         }
 
-        // 2. Force Branding in the Title
         var targetBranding = "EchoDupe | Cookie Clicker";
         var lockTitle = function() {
             var currentTitle = document.title;

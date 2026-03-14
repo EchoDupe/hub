@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>EchoDupe | HallowEcho</title>
     
     <link rel="icon" type="image/png" href="./assets/hallowecho.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     
     <style>
-        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Helvetica', Arial, sans-serif; color: #06b6d4; }
+        /* Base Styles */
+        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Inter', sans-serif; color: #fff; }
         canvas { display: block; width: 100vw; height: 100vh; cursor: none; }
 
+        /* Hub Button */
         .back-to-hub {
             position: fixed; top: 20px; left: 20px; z-index: 10000;
             background: rgba(10, 10, 15, 0.9); border: 1px solid rgba(6, 182, 212, 0.4);
@@ -21,21 +22,49 @@
             backdrop-filter: blur(10px); transition: all 0.3s ease;
             font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
         }
-        .back-to-hub:hover { background: #06b6d4; color: #000; box-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+        .back-to-hub:hover { background: #06b6d4; color: #000; }
 
+        /* Loader Overlay */
         #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* Updated to lowercase 'assets' */
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('./assets/hallowecho.png');
-            background-size: cover; background-position: center;
+            position: fixed; inset: 0;
+            background-color: #050505; /* Solid dark grey/black to fix transparent icon issues */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; cursor: pointer; text-align: center;
+            z-index: 9999;
         }
-        .loading-text { font-size: 18px; font-weight: bold; letter-spacing: 5px; animation: flicker 2s infinite; font-family: 'Courier New', monospace; }
+
+        /* Centered Logo Image */
+        .loader-logo {
+            width: 250px; height: auto; margin-bottom: 40px;
+            filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.2));
+        }
+
+        /* The Initialize Box */
+        .init-box {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-align: center;
+        }
+        .init-box:hover {
+            border-color: #ef4444; /* Horror red accent on hover */
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .loading-text { 
+            font-size: 14px; 
+            font-weight: 900; 
+            letter-spacing: 4px; 
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            animation: flicker 3s infinite;
+        }
         
         @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 22%, 24%, 55% { opacity: 0.2; }
+            0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.3; }
         }
     </style>
 </head>
@@ -45,9 +74,13 @@
         <i class="fa-solid fa-house"></i><span>Back to Hub</span>
     </a>
 
-    <div id="loader" onclick="startGame()">
-        <div class="loading-text">CLICK TO INITIALIZE HALLOWECHO...</div>
-        <div style="font-size: 10px; margin-top: 10px; opacity: 0.5;">v1.0.5 - SYSTEM ONLINE</div>
+    <div id="loader">
+        <img src="./assets/hallowecho.png" alt="HallowEcho" class="loader-logo">
+        
+        <div class="init-box" onclick="startGame()">
+            <div class="loading-text">INITIALIZE_NODE</div>
+            <div style="font-size: 9px; margin-top: 8px; color: rgba(255,255,255,0.4); letter-spacing: 2px;">SECURE CONNECTION REQUIRED</div>
+        </div>
     </div>
     
     <canvas id="gameCanvas"></canvas>
@@ -58,15 +91,21 @@
     <script>
         function startGame() {
             const loader = document.getElementById('loader');
-            loader.style.transition = "opacity 0.8s ease, visibility 0.8s";
-            loader.style.opacity = "0";
-            loader.style.visibility = "hidden";
             
-            if (window.initHallowEcho) {
-                window.initHallowEcho();
-            } else {
-                console.error("HallowEcho: Engine load failed.");
-            }
+            // Step 1: Instant snap to black
+            loader.style.transition = "none"; 
+            loader.style.background = "#000";
+            loader.innerHTML = ""; // Clear the logo and button immediately
+            
+            // Step 2: Initialize game engine behind the black curtain
+            setTimeout(() => {
+                if (window.initHallowEcho) {
+                    window.initHallowEcho();
+                }
+                
+                // Step 3: Remove loader entirely
+                loader.style.display = 'none';
+            }, 500); // Half-second delay for a clean "boot up" feel
         }
     </script>
 </body>

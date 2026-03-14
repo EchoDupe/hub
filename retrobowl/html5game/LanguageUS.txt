@@ -1115,6 +1115,7 @@ msg_BoostConditionEvent2	You gave the team an extra rest day.
 msg_BoostConditionEvent3	You bring in a renowned health guru to talk to the squad.
 msg_BoostConditionEvent4	Ice baths and oxygen tents all round!
 msg_BoostConditionEvent5	You organized a relaxing day on the beach for the team.
+ui_TeamCondition TEAM CONDITION
 btn_BoostSalaryCap	Increase#Salary Cap
 msg_BoostSalaryCap	Do you want to persuade the league commissioner to permanently increase the salary cap to $$numm? It will cost you $cost coach credits.
 msg_BoostSalaryNoCredit	You need $cost coach credits to increase the salary cap to $$numm.

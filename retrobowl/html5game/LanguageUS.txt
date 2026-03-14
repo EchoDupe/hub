@@ -1154,6 +1154,7 @@ tla_Champion	CH
 tla_SuperBowl	RB
 match_FieldGoal	Field Goal
 match_Punt	Punt
+match_SkipTime	SKIP TO END
 msg_OnSideKick	Do you want to try an onside kick? You will have a $num% chance of recovering the ball.
 match_OnsideKicking	$teamname try the onside kick!
 match_OnsideKickingPlayer	$playername attempts the onside kick!
@@ -1161,6 +1162,7 @@ match_OnsideKickingSuccess	And $teamname recovers the ball!
 match_OnsideKickingFail	But $teamname recovers the ball
 ui_Logo	Logo
 ui_Rush	Rush
+ui_View View
 comm_stage_KickOffPlayer	$playername kicks off for $teamname
 ui_DataError	A data error has occurred: ($num)
 msg_BulletThrow	BULLET THROW!#You can switch between a low or high pass by tapping the screen with a second finger whilst aiming.
@@ -1184,5 +1186,3 @@ msg_pick_six	PICK SIX!
 msg_safety	SAFETY!
 msg_two_minute	2 MINUTE WARNING
 msg_fair_catch	FAIR CATCH
-UI_VIEW VIEW
-match_SkipTime	SKIP TO END

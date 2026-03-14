@@ -9,11 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     
     <style>
-        /* Base Styles */
         body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Inter', sans-serif; color: #fff; }
         canvas { display: block; width: 100vw; height: 100vh; cursor: none; }
 
-        /* Hub Button */
+        /* HUB BUTTON */
         .back-to-hub {
             position: fixed; top: 20px; left: 20px; z-index: 10000;
             background: rgba(10, 10, 15, 0.9); border: 1px solid rgba(6, 182, 212, 0.4);
@@ -22,49 +21,65 @@
             backdrop-filter: blur(10px); transition: all 0.3s ease;
             font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
         }
-        .back-to-hub:hover { background: #06b6d4; color: #000; }
 
-        /* Loader Overlay */
+        /* LOADER OVERLAY */
         #loader {
             position: fixed; inset: 0;
-            background-color: #050505; /* Solid dark grey/black to fix transparent icon issues */
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            /* Background color with a flicker animation */
+            background-color: #0a0a0a; 
+            display: flex; flex-direction: column; align-items: center;
             z-index: 9999;
+            animation: bgFlicker 5s infinite;
         }
 
-        /* Centered Logo Image */
+        /* LOGO AREA - Fixing the transparency look */
+        .logo-container {
+            flex: 1; /* Pushes content below to the bottom */
+            display: flex; justify-content: center; align-items: center;
+            width: 100%;
+            /* This gives the transparent image a colored "aura" */
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+        }
         .loader-logo {
-            width: 250px; height: auto; margin-bottom: 40px;
-            filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.2));
+            width: 300px; height: auto;
+            filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.8));
         }
 
-        /* The Initialize Box */
+        /* INITIALIZE BOX AT BOTTOM */
+        .bottom-bar {
+            width: 100%;
+            padding-bottom: 60px; /* Distance from the very bottom */
+            display: flex;
+            justify-content: center;
+        }
         .init-box {
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.03);
-            padding: 20px 40px;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px 60px;
+            border-radius: 2px;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all 0.2s ease;
             text-align: center;
         }
         .init-box:hover {
-            border-color: #ef4444; /* Horror red accent on hover */
-            background: rgba(239, 68, 68, 0.05);
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
         }
 
         .loading-text { 
-            font-size: 14px; 
-            font-weight: 900; 
-            letter-spacing: 4px; 
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            animation: flicker 3s infinite;
+            font-size: 12px; font-weight: 900; letter-spacing: 6px; 
+            color: #fff; font-family: 'Courier New', monospace;
         }
-        
-        @keyframes flicker {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.3; }
+
+        /* ANIMATIONS */
+        @keyframes bgFlicker {
+            0%, 100% { background-color: #0a0a0a; }
+            95% { background-color: #0a0a0a; }
+            96% { background-color: #0f0f0f; }
+            97% { background-color: #080808; }
+            98% { background-color: #121212; }
+            99% { background-color: #0a0a0a; }
         }
     </style>
 </head>
@@ -75,11 +90,14 @@
     </a>
 
     <div id="loader">
-        <img src="./assets/hallowecho.png" alt="HallowEcho" class="loader-logo">
+        <div class="logo-container">
+            <img src="./assets/hallowecho.png" alt="HallowEcho" class="loader-logo">
+        </div>
         
-        <div class="init-box" onclick="startGame()">
-            <div class="loading-text">INITIALIZE_NODE</div>
-            <div style="font-size: 9px; margin-top: 8px; color: rgba(255,255,255,0.4); letter-spacing: 2px;">SECURE CONNECTION REQUIRED</div>
+        <div class="bottom-bar">
+            <div class="init-box" onclick="startGame()">
+                <div class="loading-text">INITIALIZE_SYSTEM</div>
+            </div>
         </div>
     </div>
     
@@ -92,20 +110,17 @@
         function startGame() {
             const loader = document.getElementById('loader');
             
-            // Step 1: Instant snap to black
-            loader.style.transition = "none"; 
+            // INSTANT BLACKOUT
+            loader.style.animation = "none";
             loader.style.background = "#000";
-            loader.innerHTML = ""; // Clear the logo and button immediately
+            loader.innerHTML = ""; 
             
-            // Step 2: Initialize game engine behind the black curtain
             setTimeout(() => {
                 if (window.initHallowEcho) {
                     window.initHallowEcho();
                 }
-                
-                // Step 3: Remove loader entirely
                 loader.style.display = 'none';
-            }, 500); // Half-second delay for a clean "boot up" feel
+            }, 400); 
         }
     </script>
 </body>

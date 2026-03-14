@@ -204,7 +204,14 @@
                     <span class="glitch-text text-sm text-white mb-1">BASKETBALL LEGENDS</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Sports</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">01</span>
+                    </div>
+                </a>
+
+                <a href="basketball-stars/index.html" class="game-card" data-name="basketball stars" data-category="sports">
+                    <div class="icon-box"><img src="basketball-stars/basketballstars.png" alt="Basketball Stars"></div>
+                    <span class="glitch-text text-sm text-white mb-1">BASKETBALL STARS</span>
+                    <div class="sub-label">
+                        <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Sports</span>
                     </div>
                 </a>
 
@@ -213,7 +220,6 @@
                     <span class="glitch-text text-sm text-white mb-1">COOKIE CLICKER</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Simulator</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">02</span>
                     </div>
                 </a>
 
@@ -222,7 +228,6 @@
                     <span class="glitch-text text-sm text-white mb-1">TUNNEL RUSH</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Action</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">03</span>
                     </div>
                 </a>
 
@@ -231,7 +236,6 @@
                     <span class="glitch-text text-sm text-white mb-1">DRIVE MAD</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Simulator</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">04</span>
                     </div>
                 </a>
 
@@ -240,7 +244,6 @@
                     <span class="glitch-text text-sm text-white mb-1">RETRO BOWL</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Sports</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">05</span>
                     </div>
                 </a>
 
@@ -249,7 +252,6 @@
                     <span class="glitch-text text-sm text-white mb-1">MONKEY MART</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Simulator</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">06</span>
                     </div>
                 </a>
 
@@ -258,7 +260,6 @@
                     <span class="glitch-text text-sm text-white mb-1">DRIFT HUNTERS</span>
                     <div class="sub-label">
                         <span class="text-[8px] font-bold text-cyan-500/60 tracking-[0.1em] uppercase">Simulator</span>
-                        <span class="text-[6px] text-zinc-700 font-bold">07</span>
                     </div>
                 </a>
 
@@ -276,38 +277,49 @@
     </footer>
 
     <script>
-        // Search and Filter Logic
         const searchInput = document.getElementById('game-search');
         const categoryBtns = document.querySelectorAll('.category-btn');
-        const gameCards = document.querySelectorAll('.game-card[data-name]');
+        const grid = document.getElementById('game-grid');
         const initNode = document.getElementById('init-node');
-
         let currentCategory = 'all';
+
+        // Alphabetical Sort Logic
+        function sortGames() {
+            const cards = Array.from(grid.querySelectorAll('.game-card[data-name]'));
+            cards.sort((a, b) => {
+                const nameA = a.getAttribute('data-name').toLowerCase();
+                const nameB = b.getAttribute('data-name').toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+            
+            // Re-append sorted cards
+            cards.forEach(card => grid.appendChild(card));
+            // Ensure Initializing node is always last
+            grid.appendChild(initNode);
+        }
 
         function filterGames() {
             const query = searchInput.value.toLowerCase();
+            const gameCards = grid.querySelectorAll('.game-card[data-name]');
             
             gameCards.forEach(card => {
                 const name = card.getAttribute('data-name');
                 const category = card.getAttribute('data-category');
-                
                 const matchesSearch = name.includes(query);
                 const matchesCategory = currentCategory === 'all' || category === currentCategory;
 
-                if (matchesSearch && matchesCategory) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
             });
 
-            // Hide the "Initializing" card if searching or filtering
             if (query.length > 0 || currentCategory !== 'all') {
                 initNode.style.display = 'none';
             } else {
                 initNode.style.display = 'flex';
             }
         }
+
+        // Run sort on load
+        window.addEventListener('DOMContentLoaded', sortGames);
 
         searchInput.addEventListener('input', filterGames);
 

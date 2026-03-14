@@ -854,6 +854,7 @@ tip_32	Training regimes affect a player's happiness, XP, energy and injury risk
 btn_NotInterested	Reject
 ui_SoundFX	Sound FX
 ui_Zoom	Cam Zoom
+ui_Sound Sound
 ui_Music	Music
 ui_Menus	Menus
 ui_Continuous	Continuous
@@ -923,6 +924,7 @@ ui_Alternate	Alt
 ui_UnlimitedVersion	Unlimited Version
 btn_WeatherOn	On
 btn_WeatherOff	Off
+btn_KickReturns Kick Returns 
 msg_NeedUnlimited	You need to upgrade to the unlimited version to use this feature. Upgrade now?
 ui_RestoreAllTeams	Restore#All Teams
 msg_RestoreAllTeams	Restore the default names and uniform colors for all teams?
